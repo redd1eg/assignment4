@@ -1,50 +1,41 @@
-Assignment 4 – Smart City / Smart Campus Scheduling
-🎯 Goal
+# 🏙️ Assignment 4 — Smart City / Smart Campus Scheduling
 
-Integrate two major graph-theory topics in one applied case study:
+## 🎯 Goal
+Integrate two major graph-theory topics into one applied project:
 
-Strongly Connected Components (SCC) and Topological Ordering
+1. **Strongly Connected Components (SCC)** and **Topological Ordering**
+2. **Shortest and Longest Paths in Directed Acyclic Graphs (DAGs)**
 
-Shortest and Longest Paths in Directed Acyclic Graphs (DAGs)
+This project simulates a *Smart City / Smart Campus* scheduling system managing:
+- Street cleaning, repair jobs, sensor/camera maintenance
+- Internal analytical subtasks with complex dependencies
 
-The context is a Smart City / Smart Campus scheduling system that manages tasks such as:
+Some dependencies are **cyclic** (need SCC compression), while others are **acyclic** (allow optimal scheduling).
 
-Street cleaning, repair jobs, camera/sensor maintenance
+---
 
-Internal analytics subtasks with dependency relations
+## 🧩 Project Structure
 
-Some task dependencies are cyclic (require SCC compression), while others are acyclic (allow optimal planning).
-
-🧩 Project Structure
 assignment4-smart-scheduling/
 ├─ pom.xml
 ├─ README.md
 ├─ data/
-│  ├─ small_1.json
-│  ├─ medium_1.json
-│  ├─ large_1.json
-│  └─ tasks.json
+│ ├─ small_1.json
+│ ├─ medium_1.json
+│ ├─ large_1.json
+│ └─ tasks.json
 ├─ src/
-│  ├─ main/java/graph/
-│  │  ├─ scc/      → TarjanSCC.java, SCCResult.java
-│  │  ├─ topo/     → KahnTopologicalSorter.java
-│  │  ├─ dagsp/    → DAGShortestPaths.java, DAGPathResult.java
-│  │  └─ cli/      → Main.java
-│  └─ test/java/graph/
-│     ├─ scc/TarjanSCCTest.java
-│     ├─ topo/KahnTopoTest.java
-│     └─ dagsp/DAGSPTest.java
+│ ├─ main/java/graph/
+│ │ ├─ scc/ → TarjanSCC.java, SCCResult.java
+│ │ ├─ topo/ → KahnTopologicalSorter.java
+│ │ ├─ dagsp/ → DAGShortestPaths.java, DAGPathResult.java
+│ │ └─ cli/ → Main.java
+│ └─ test/java/graph/
+│ ├─ scc/TarjanSCCTest.java
+│ ├─ topo/KahnTopoTest.java
+│ └─ dagsp/DAGSPTest.java
 
-⚙️ Build & Run
-Compile and package (with dependencies)
-mvn clean package
-
-Run with any dataset
-java -jar target/assignment4-smart-scheduling-1.0-SNAPSHOT-jar-with-dependencies.jar data/tasks.json
-
-
-Example output:
-
+Example Output
 === Tarjan SCC ===
 Component 0: [1, 2, 3]
 Component 1: [0]
@@ -68,49 +59,43 @@ Order: [1, 0, 2, 3, 4, 5]
 Shortest distances from 4: [∞, ∞, ∞, ∞, 0, 2, 7, 8]
 Longest path lengths from 4: [−∞, −∞, −∞, −∞, 0, 2, 7, 8]
 
-📚 Algorithms Implemented
-Category	Algorithm	Class	Complexity
-SCC	Tarjan’s algorithm	TarjanSCC.java	O(V + E)
-Condensation	Build component graph	SCCResult.java	O(V + E)
-Topological Sort	Kahn’s algorithm	KahnTopologicalSorter.java	O(V + E)
-Shortest Paths	Dynamic Programming over Topo Order	DAGShortestPaths.java	O(V + E)
-Longest Path	Max-DP over Topo Order	DAGShortestPaths.java	O(V + E)
 
-Weight model: edge weights (from JSON file).
-Each edge has a numerical duration w.
+ Algorithms Implemented
+ | Category         | Algorithm              | Class                        | Complexity |
+ | ---------------- | ---------------------- | ---------------------------- | ---------- |
+ | SCC              | Tarjan’s algorithm     | `TarjanSCC.java`             | O(V + E)   |
+ | Condensation     | Build component graph  | `SCCResult.java`             | O(V + E)   |
+ | Topological Sort | Kahn’s algorithm       | `KahnTopologicalSorter.java` | O(V + E)   |
+ | Shortest Paths   | DP over Topo Order     | `DAGShortestPaths.java`      | O(V + E)   |
+ | Longest Path     | Max-DP over Topo Order | `DAGShortestPaths.java`      | O(V + E)   |
 
-🧪 Testing and Metrics
+ Weight model: edge weights (values from JSON).
+ Each edge has a numerical duration w.
 
-JUnit 5 tests are located under src/test/java.
-Metrics collected for each algorithm include:
+Testing & Metrics
 
-DFS calls and edge visits (SCC)
+JUnit 5 tests are under src/test/java.
+
+Metrics collected:
+
+DFS calls & edge visits (SCC)
 
 Queue push/pop operations (Topo)
 
-Relaxation operations (DAG SP)
+Relaxations (DAG-SP)
 
-Timing measured via System.nanoTime().
+Timing via System.nanoTime().
 
-Run all tests:
+Dataset Summary
+| File          | Nodes | Edges | Type  | Cycles | Description      |
+| ------------- | ----- | ----- | ----- | ------ | ---------------- |
+| small_1.json  | 6     | 7     | Mixed | 1      | Simple SCC + DAG |
+| small_2.json  | 8     | 10    | DAG   | 0      | Linear chain     |
+| medium_1.json | 15    | 25    | Mixed | 2      | Two SCCs         |
+| medium_2.json | 18    | 30    | DAG   | 0      | Dense DAG        |
+| large_1.json  | 25    | 60    | Mixed | 3      | Performance test |
+| tasks.json    | 8     | 7     | Mixed | 1      | Provided example |
 
-mvn test
-
-
-Expected output:
-
-Tests run: 3, Failures: 0, Errors: 0, Skipped: 0
-
-📊 Datasets Summary (/data)
-File	Nodes	Edges	Type	Cycles	Description
-small_1.json	6	7	Mixed	1	Simple SCC + DAG structure
-small_2.json	8	10	DAG	0	Linear task chain
-medium_1.json	15	25	Mixed	2	Two independent SCCs
-medium_2.json	18	30	DAG	0	Dense acyclic graph
-large_1.json	25	60	Mixed	3	Stress test for performance
-tasks.json	8	7	Mixed	1	Provided example file
-
-All datasets follow the format:
 
 {
 "directed": true,
@@ -123,39 +108,40 @@ All datasets follow the format:
 "weight_model": "edge"
 }
 
-🧠 Analysis & Results
-1. SCC Performance
-   Dataset	Vertices	Edges	SCCs	Time (ns)	DFS Calls
-   small_1	6	7	2	~25 000	6
-   medium_1	15	25	3	~50 000	15
-   large_1	25	60	4	~90 000	25
 
-Tarjan SCC scales linearly with graph size.
+Analysis & Results
+| Dataset  | Vertices | Edges | SCCs | Time (ns) | DFS Calls |
+| -------- | -------- | ----- | ---- | --------- | --------- |
+| small_1  | 6        | 7     | 2    | ~25,000   | 6         |
+| medium_1 | 15       | 25    | 3    | ~50,000   | 15        |
+| large_1  | 25       | 60    | 4    | ~90,000   | 25        |
 
-2. Topological Ordering
 
-Kahn’s algorithm produces a valid ordering of the condensation DAG in O(V + E).
-Push/pop counts are proportional to edges.
-For dense graphs, Kahn requires more queue operations.
+Topological Ordering
 
-3. Shortest and Longest Paths in DAG
-   Dataset	Source	Longest Path	Length	Critical Nodes
-   tasks.json	4	4 → 5 → 6 → 7	8	{4, 5, 6, 7}
-   small_1.json	0	0 → 1 → 2 → 3	6	{0–3}
+Kahn’s algorithm produces valid ordering in O(V + E).
+Push/pop counts grow linearly with density.
+Efficient for all tested graphs.
 
-Shortest paths computed via standard DP relaxation over topological order.
-Longest path found using sign inversion / max-DP.
+🔹 Shortest & Longest Paths
+Dataset	Source	Longest Path	Length	Critical Nodes
+tasks.json	4	4 → 5 → 6 → 7	8	{4, 5, 6, 7}
+small_1.json	0	0 → 1 → 2 → 3	6	{0–3}
+
+Shortest paths computed via DP relaxation.
+Longest path computed via sign inversion (Max-DP).
 
 🧾 Conclusions
 
-SCC + Condensation effectively reduce cyclic dependencies into manageable DAGs.
+SCC + Condensation simplify cyclic graphs into manageable DAGs.
 
-Topological ordering enables efficient task scheduling and dependency resolution.
+Topological sort enables dependency-based task scheduling.
 
-DAG shortest paths identify optimal execution times;
-longest paths highlight critical chains of dependent tasks.
+Shortest paths provide minimal execution times.
 
-For dense graphs, SCC and Topo overhead remains manageable (O(V + E)).
+Longest paths identify critical sequences.
 
-Practical recommendation:
-Use SCC compression first for cyclic task graphs, then apply DAG-based dynamic programming for optimal scheduling.
+Performance remains efficient for both sparse and dense graphs (O(V + E)).
+
+Recommendation:
+Use SCC compression first to remove cycles, then apply DAG-based scheduling algorithms.
